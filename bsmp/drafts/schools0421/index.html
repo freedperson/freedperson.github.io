@@ -34,25 +34,24 @@
     to show time-based data with a slider.
       https://github.com/skeate/Leaflet.timeline
   -->
-  <script src="https://cdn.rawgit.com/skeate/Leaflet.timeline/master/dist/leaflet.timeline.min.js"></script>
+  <script src="https://cdn.rawgit.com/ebrelsford/Leaflet.timeline/remove-displayed-layers/dist/leaflet.timeline.min.js"></script>
   <link rel="stylesheet" href="https://cdn.rawgit.com/skeate/Leaflet.timeline/master/dist/leaflet.timeline.min.css"/>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>JS Bin</title>
   
-    <script>
+     <script>
     var map;
     var timeline;
     var tractsTimeline;
-        
-    function getSchoolsStyle(data) {
+        function getSchoolsStyle(data) {
       // Get the value from the census tract for
       // whatever is selected in the dropdown
-      var pctValue = data.properties[$('.category').val()];
+      var pctValue = data.properties[$('.categorySchools').val()];
  
-      var catName = $('.category').val();
+      var catName = $('.categorySchools').val();
 
-      var fillOpacity = 0.95;
+      var fillOpacity;
       if (pctValue == undefined) {
         fillOpacity == 0;
       }
@@ -82,6 +81,7 @@
       // Varying lightness by whatever is selected in
       // the dropdown
       
+      
       var fillColor = 'hsl(' + fillHue + ', 66%, ' + (((1 - pctValue) * 88) + 10) + '%)';
       if (pctValue == undefined) {
         fillColor = 'hsl(0, 0%, 70%)';
@@ -89,13 +89,64 @@
       // Varying point radii by enrnumtot
 
       var radius = 10;
-        radius = data.properties.enrnumtot / 70;
+        radius = data.properties.enrnumtot / 60;
 
       return {
         radius: radius,
         stroke: true,
         color: "#000",
         weight: 1,
+        fillColor: fillColor,
+        fillOpacity: fillOpacity
+      };
+    }
+
+    function getTractsStyle(feature) {
+      // Get the value from the census tract for
+      // whatever is selected in the dropdown
+      var pctValue = feature.properties[$('.category').val()];
+
+      var catName = $('.category').val();
+
+      var fillOpacity = 0.8;
+      if (pctValue == undefined) {
+        fillOpacity = 0;
+      }
+      console.log(catName);
+      var fillHue; 
+    
+      if (catName == 'pctafm') {
+        fillHue = 150;
+      }
+       if (catName == 'pctasi') {
+        fillHue = 200;
+      }
+       if (catName == 'pcthis') {
+        fillHue = 250;
+      }
+       if (catName == 'pctwht') {
+        fillHue = 300;
+      }
+       if (catName == 'pctpov') {
+        fillHue = 350;
+      }
+       if (catName == 'pct18') {
+        fillHue = 30;
+      }
+      // Varying lightness by whatever is selected in
+      // the dropdown
+      
+      var fillColor = 'hsl(' + fillHue + ', 66%, ' + (((1 - pctValue) * 88) + 10) + '%)';
+      console.log(fillColor);
+
+      if (pctValue == undefined) {
+        fillColor = 'hsl(0, 0%, 70%)';
+      }
+      if (catName == 'numtot') {
+        fillColor = 'hsl(' + fillHue + ', 66%, ' + (pctValue / 100) + '%)';
+      }
+      return {
+        stroke: false,
         fillColor: fillColor,
         fillOpacity: fillOpacity
       };
@@ -113,17 +164,35 @@
        * the id from your Mapbox map to use those tiles instead.
        */
       L.tileLayer('https://{s}.tiles.mapbox.com/v3/ebrelsford.ho06j5h0/{z}/{x}/{y}.png', {
-        maxZoom: 18,
+        maxZoom: 19,
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://mapbox.com">Mapbox</a>'
       }).addTo(map);
-
+      
+        $.getJSON('http://maxfreedman.cartodb.com/api/v1/sql?q=SELECT * FROM district_borders&format=GeoJSON')
+  
+    // When it's done, add the results to the map
+    .done(function (data) {
+      L.geoJson(data, {
+         style: function (feature) {
+          var style = {
+            fillOpacity: 0,
+            stroke: true,
+            color: '#000',
+            weight: 2
+          }
+      return style;
+        }
+      }).addTo(map);   
+   
+    });
       /*
        * Create our time slider. We give it a format for the dates that it
        * will display underneath it. 'YYYY-MM-DD' means "year-month-day". If
        * you want to customize this see the moment.js documentation:
        *   http://momentjs.com/docs/#/displaying/
        */
-      var slider = L.timelineSliderControl({
+        var slider = L.timelineSliderControl({
+        start: new Date(1973, 0, 1),
         formatOutput: function(date){
           return moment(date).format("YYYY");
         }
@@ -146,7 +215,7 @@
        *    for a while. If you have a real end date you would probably want to use
        *    that.
        */
-       var sql = "SELECT *, year_date AS start, year_end AS end FROM d16_data_0401_merge WHERE the_geom IS NOT NULL";
+       var sql = "SELECT *, year_date AS start, year_date + interval '1 year' AS end FROM d16_data_0401_merge WHERE the_geom IS NOT NULL";
       var url = 'http://maxfreedman.cartodb.com/api/v1/sql?' + $.param({
         format: 'geojson',
         q: sql
@@ -156,19 +225,23 @@
       var tractsUrl = 'http://maxfreedman.cartodb.com/api/v1/sql?' + $.param({
         format: 'geojson',
         q: tractsSql
+      
+    
       });
+      
       /*
        * Actually get the data from CartoDB now that we have an SQL statement that works.
        */
       $.getJSON(url, function (data) {
         $.getJSON(tractsUrl, function (tractsData) {
-        
+
           /*
            * Once the data loads, create an L.timeline. This replaces L.geoJson.
            */
           timeline = L.timeline(data, {
             onEachFeature: function (feature, layer) {
-              layer.bindPopup(feature.properties.dbn);
+              layer.bindPopup('<strong><p>' + feature.properties.entityname + ' ' + '(' + feature.properties.dbn + ')' + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Enrollment: ' + feature.properties.enrnumtot + '</li><li>African-American: ' + feature.properties.enrnumafm + ' ' + '(' + feature.properties.enrpctafm*100 + '%)' + '</li><li>Asian: ' + feature.properties.enrnumasi + ' ' + '(' + feature.properties.enrpctasi*100 + '%)' + '</li><li>Hispanic: ' + feature.properties.enrnumhis + ' ' + '(' + feature.properties.enrpcthis*100 + '%)' + '</li><li>White: ' + feature.properties.enrnumwht + ' ' + '(' + feature.properties.enrpctwht*100 + '%)' + '</li><li>Poverty: ' + feature.properties.enrnumpov + ' ' + '(' + feature.properties.enrpctpov*100 + '%)' + '</li><li>Free or Reduced Price Lunch: ' + feature.properties.ccdenrnumfrl + ' ' + '(' + feature.properties.ccdenrpctfrl*100 + '%)' + '</li></p>');
+              
             },
 
             pointToLayer: function(data, latlng) {
@@ -181,38 +254,30 @@
           });
           tractsTimeline = L.timeline(tractsData, {
             onEachFeature: function (feature, layer) {
-              layer.bindPopup(feature.properties.name);
+              layer.bindPopup('<strong><p>' + feature.properties.name + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Population: ' + feature.properties.numtot + '</li><li>African-American: ' + feature.properties.numafm + ' ' + '(' + feature.properties.pctafm*100 + '%)' + '</li><li>Asian: ' + feature.properties.numasi + ' ' + '(' + feature.properties.pctasi*100 + '%)' + '</li><li>Hispanic: ' + feature.properties.numhis + ' ' + '(' + feature.properties.pcthis*100 + '%)' + '</li><li>White: ' + feature.properties.numwht + ' ' + '(' + feature.properties.pctwht*100 + '%)' + '</li><li>Poverty: ' + feature.properties.numpov + ' ' + '(' + feature.properties.pctpov*100 + '%)' + '</li><li>Under 18: ' + feature.properties.num18 + ' ' + '(' + feature.properties.pct18*100 + '%)' + '</li></p>');
             },
 
             style: function(feature) {
               return getTractsStyle(feature);
             }
           });
-          
+
           tractsTimeline.addTo(map);
           timeline.addTo(map);
-          slider.addTimelines(timeline);
+          slider.addTimelines(timeline,tractsTimeline);
 
         });
       });
-                  $.getJSON('http://maxfreedman.cartodb.com/api/v1/sql?q=SELECT * FROM district_borders&format=GeoJSON')
-  
-    // When it's done, add the results to the map
-    .done(function (data) {
-      L.geoJson(data, {
-         style: function (feature) {
-          var style = {
-            fillOpacity: 0,
-            stroke: true,
-            color: '#000',
-            weight: 2
-          }
-      return style;
-        }
-      }).addTo(map);   
-   
- });
+
       $('.category').change(function () {
+        // When the dropdown changes, set the style on each
+        // census tract using our getTractsStyle function
+        tractsTimeline.eachLayer(function (layer) {
+          var feature = layer.feature;
+          layer.setStyle(getTractsStyle(feature));
+        });
+      });
+      $('.categorySchools').change(function () {
         // When the dropdown changes, set the style on each
         // census tract using our getTractsStyle function
         timeline.eachLayer(function (layer) {
@@ -220,17 +285,28 @@
           layer.setStyle(getSchoolsStyle(feature));
         });
       });
+
     });
   </script>
+
 <style>
           .leaflet-left {
       width: 100%;
     }
-    
+      .leaflet-popup p {
+    margin: 5px 20;
+  }
+
     .category {
       position: absolute;
       right: 435px;
       top: 15px;
+      z-index: 5000;
+    }
+     .categorySchools {
+      position: absolute;
+      right: 435px;
+      top: 45px;
       z-index: 5000;
     }
 </style>
@@ -238,7 +314,15 @@
   <body>
 
     <div class="map" id="map"></div>
- <select class="category">
+   <select class="category">
+    <option value="pctafm">% african american</option>
+    <option value="pctasi">% asian</option>
+    <option value="pcthis">% hispanic</option>
+    <option value="pctwht">% white</option>
+    <option value="pctpov">% poverty</option>
+    <option value="pct18">% under 18</option>
+  </select>
+    <select class="categorySchools">
     <option value="enrpctafm">% african american</option>
     <option value="enrpctasi">% asian</option>
     <option value="enrpcthis">% hispanic</option>
@@ -253,29 +337,27 @@
         </div>
         <h1>Central Brooklyn School Mapping Project</h1>
         <h3>How to use</h3>
-<ol><li>Select a demographic from the menu in the top right corner of the map.</li> 
-          <li>Press play on the timeline at the bottom of the map and watch the changes, or use the arrow to skip from year to year.</li>
-        <li>Click on a school to see more detailed information.</li></ol> 
+<ol><li>Select a demographic from one or both of the menus in the top right corner of the map.</li> 
+          <li>Press play on the timeline, or use the arrows to skip from year to year.</li>
+        <li>Click on a school or census tract to see more detailed information.</li></ol> 
           
           <h3>How to read</h3>
         <ul><li><strong>Shape: </strong>Each circle represents a public school in District 16.</li>
         <li><strong>Size: </strong>A school gets bigger and smaller as <em>enrollment</em> goes up and down.</li>
-        <li><strong>Color: </strong>A school gets darker and lighter as the percentage of the selected <em>demographic</em> in that school goes up and down. Gray indicates missing data.</li>
+        <li><strong>Color: </strong>A school or census tract gets darker and lighter as the percentage of the selected <em>demographic</em> group in that school or census tract goes up and down. Gray indicates missing data.</li>
         <li><strong>Year: </strong>Each year displayed on the timeline refers to the school year <em>ending</em> in that year. For example, "2016" refers to the 2015-2016 school year.</li></ul>
         
 
         <!--Copy and paste the div below for creating content blocks-->
-        <h3>Background</h3>
-        <ul><li>District 16 was established by the Decentralization Law of 1969, but its current boundaries were drawn in 1973.</li> 
-        <li>From 1970-2002, Community School Boards governed the 32 districts created by the law, supervised by a central Board of Education.</li> 
-        <li>In 2002, the Community School Boards were abolished, the Board of Education was renamed the Panel for Educational Policy (PEP), and both the PEP and the new Department of Education operated under the direct control of the Mayor and the Chancellor.</li></ul>
+
 
         <h3>Sources</h3>
-          <ul><li>New York City Municipal Library and Archives</li>
+          <h5><ul><li>New York City Municipal Library and Archives</li>
           <li>NYU Bobst Library</li>
              <li>National Center for Education Statistics</li>
               <li>NYU Research Alliance for NYC Schools</li>
               <li>NYC Department of Education</li>
+              <li>National Historic Geographic Information System</li></h5>
               
 
         <div class="context footer">
