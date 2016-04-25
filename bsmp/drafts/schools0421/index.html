@@ -197,7 +197,9 @@
           return moment(date).format("YYYY");
         }
       });
-      map.addControl(slider);
+      map.addControl(slider);    
+  slider.play();
+  slider.pause();
 
       /*
        * Select our data from CartoDB. I'll reformat it here for clarity:
@@ -240,7 +242,7 @@
            */
           timeline = L.timeline(data, {
             onEachFeature: function (feature, layer) {
-              layer.bindPopup('<strong><p>' + feature.properties.entityname + ' ' + '(' + feature.properties.dbn + ')' + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Enrollment: ' + (feature.properties.enrnumtot === null ? 'no data' : feature.properties.enrnumtot) + '</li><li>African-American: ' + (feature.properties.enrnumafm === null ? 'no data' : feature.properties.enrnumafm) + ' ' + '(' + feature.properties.enrpctafm*100 + '%)' + '</li><li>Asian: ' + feature.properties.enrnumasi + ' ' + '(' + feature.properties.enrpctasi*100 + '%)' + '</li><li>Hispanic: ' + feature.properties.enrnumhis + ' ' + '(' + feature.properties.enrpcthis*100 + '%)' + '</li><li>White: ' + feature.properties.enrnumwht + ' ' + '(' + feature.properties.enrpctwht*100 + '%)' + '</li><li>Poverty: ' + feature.properties.enrnumpov + ' ' + '(' + feature.properties.enrpctpov*100 + '%)' + '</li><li>Free or Reduced Price Lunch: ' + feature.properties.ccdenrnumfrl + ' ' + '(' + feature.properties.ccdenrpctfrl*100 + '%)' + '</li></p>');
+              layer.bindPopup('<strong><p>' + feature.properties.entityname + ' ' + '(' + feature.properties.dbn + ')' + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Enrollment: ' + (feature.properties.enrnumtot === null ? 'no data' : feature.properties.enrnumtot) + '</li><li>African-American: ' + (feature.properties.enrnumafm === null ? 'no data' : feature.properties.enrnumafm) + ' ' + '(' + (feature.properties.enrpctafm_d === null ? ' -- ' : feature.properties.enrpctafm_d) + '%)' + '</li><li>Asian: ' + (feature.properties.enrnumasi === null ? 'no data' : feature.properties.enrnumasi) + ' ' + '(' + (feature.properties.enrpctasi_d === null ? ' -- ' : feature.properties.enrpctasi_d) + '%)' + '</li><li>Hispanic: ' + (feature.properties.enrnumhis === null ? 'no data' : feature.properties.enrnumhis) + ' ' + '(' + (feature.properties.enrpcthis_d === null ? ' -- ' : feature.properties.enrpcthis_d) + '%)' + '</li><li>White: ' + (feature.properties.enrnumwht === null ? 'no data' : feature.properties.enrnumwht) + ' ' + '(' + (feature.properties.enrpctwht_d === null ? ' -- ' : feature.properties.enrpctwht_d) + '%)' + '</li><li>Poverty: ' + (feature.properties.enrnumpov === null ? 'no data' : feature.properties.enrnumpov) + ' ' + '(' + (feature.properties.enrpctpov_d === null ? ' -- ' : feature.properties.enrpctpov_d) + '%)' + '</li><li>Free or Reduced Price Lunch: ' + (feature.properties.ccdenrnumfrl === null ? 'no data' : feature.properties.ccdenrnumfrl) + ' ' + '(' + (feature.properties.ccdenrpctfrl_d === null ? ' -- ' : feature.properties.ccdenrpctfrl_d) + '%)' + '</li></p>');
               
             },
 
@@ -254,7 +256,7 @@
           });
           tractsTimeline = L.timeline(tractsData, {
             onEachFeature: function (feature, layer) {
-              layer.bindPopup('<strong><p>' + feature.properties.name + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Population: ' + feature.properties.numtot + '</li><li>African-American: ' + feature.properties.numafm + ' ' + '(' + feature.properties.pctafm*100 + '%)' + '</li><li>Asian: ' + feature.properties.numasi + ' ' + '(' + feature.properties.pctasi*100 + '%)' + '</li><li>Hispanic: ' + feature.properties.numhis + ' ' + '(' + feature.properties.pcthis*100 + '%)' + '</li><li>White: ' + feature.properties.numwht + ' ' + '(' + feature.properties.pctwht*100 + '%)' + '</li><li>Poverty: ' + feature.properties.numpov + ' ' + '(' + feature.properties.pctpov*100 + '%)' + '</li><li>Under 18: ' + feature.properties.num18 + ' ' + '(' + feature.properties.pct18*100 + '%)' + '</li></p>');
+              layer.bindPopup('<strong><p>' + feature.properties.name + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Population: ' + feature.properties.numtot + '</li><li>African-American: ' + (feature.properties.numafm === null ? 'no data' : feature.properties.numafm) + ' ' + '(' + (feature.properties.pctafm_d === null ? ' -- ' : feature.properties.pctafm_d) + '%)' + '</li><li>Asian: ' + (feature.properties.numasi === null ? 'no data' : feature.properties.numasi) + ' ' + '(' + (feature.properties.pctasi_d === null ? ' -- ' : feature.properties.pctasi_d) + '%)' + '</li><li>Hispanic: ' + (feature.properties.numhis === null ? 'no data' : feature.properties.numhis) + ' ' + '(' + (feature.properties.pcthis_d === null ? ' -- ' : feature.properties.pcthis_d) + '%)' + '</li><li>White: ' + (feature.properties.numwht === null ? 'no data' : feature.properties.numwht) + ' ' + '(' + (feature.properties.pctwht_d === null ? ' -- ' : feature.properties.pctwht_d) + '%)' + '</li><li>Poverty: ' + (feature.properties.numpov === null ? 'no data' : feature.properties.numpov) + ' ' + '(' + (feature.properties.pctpov_d === null ? ' -- ' : feature.properties.pctpov_d) + '%)' + '</li><li>Under 18: ' + (feature.properties.num18 === null ? 'no data' : feature.properties.num18) + ' ' + '(' + (feature.properties.pct18_d === null ? ' -- ' : feature.properties.pct18_d) + '%)' + '</li></p>');
             },
 
             style: function(feature) {
