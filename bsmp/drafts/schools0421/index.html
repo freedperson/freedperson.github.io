@@ -192,7 +192,7 @@
        *   http://momentjs.com/docs/#/displaying/
        */
         var slider = L.timelineSliderControl({
-        start: new Date(1973, 0, 1),
+        start: new Date(1972, 0, 1),
         formatOutput: function(date){
           return moment(date).format("YYYY");
         }
@@ -215,13 +215,13 @@
        *    for a while. If you have a real end date you would probably want to use
        *    that.
        */
-       var sql = "SELECT *, year_date AS start, year_date + interval '1 year' AS end FROM d16_data_0401_merge WHERE the_geom IS NOT NULL";
+       var sql = "SELECT *, year_start AS start, year_end AS end FROM d16_schoolsdata_0424_merge WHERE the_geom IS NOT NULL";
       var url = 'http://maxfreedman.cartodb.com/api/v1/sql?' + $.param({
         format: 'geojson',
         q: sql
       });  
       
-      var tractsSql = "SELECT *, year_date AS start, year_end AS end FROM ngis_d16tracts_7012_merge WHERE the_geom IS NOT NULL";
+      var tractsSql = "SELECT *, year_start AS start, year_end AS end FROM ngis_d16tracts_7012_merge WHERE the_geom IS NOT NULL";
       var tractsUrl = 'http://maxfreedman.cartodb.com/api/v1/sql?' + $.param({
         format: 'geojson',
         q: tractsSql
@@ -240,7 +240,7 @@
            */
           timeline = L.timeline(data, {
             onEachFeature: function (feature, layer) {
-              layer.bindPopup('<strong><p>' + feature.properties.entityname + ' ' + '(' + feature.properties.dbn + ')' + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Enrollment: ' + feature.properties.enrnumtot + '</li><li>African-American: ' + feature.properties.enrnumafm + ' ' + '(' + feature.properties.enrpctafm*100 + '%)' + '</li><li>Asian: ' + feature.properties.enrnumasi + ' ' + '(' + feature.properties.enrpctasi*100 + '%)' + '</li><li>Hispanic: ' + feature.properties.enrnumhis + ' ' + '(' + feature.properties.enrpcthis*100 + '%)' + '</li><li>White: ' + feature.properties.enrnumwht + ' ' + '(' + feature.properties.enrpctwht*100 + '%)' + '</li><li>Poverty: ' + feature.properties.enrnumpov + ' ' + '(' + feature.properties.enrpctpov*100 + '%)' + '</li><li>Free or Reduced Price Lunch: ' + feature.properties.ccdenrnumfrl + ' ' + '(' + feature.properties.ccdenrpctfrl*100 + '%)' + '</li></p>');
+              layer.bindPopup('<strong><p>' + feature.properties.entityname + ' ' + '(' + feature.properties.dbn + ')' + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Enrollment: ' + (feature.properties.enrnumtot === null ? 'no data' : feature.properties.enrnumtot) + '</li><li>African-American: ' + (feature.properties.enrnumafm === null ? 'no data' : feature.properties.enrnumafm) + ' ' + '(' + feature.properties.enrpctafm*100 + '%)' + '</li><li>Asian: ' + feature.properties.enrnumasi + ' ' + '(' + feature.properties.enrpctasi*100 + '%)' + '</li><li>Hispanic: ' + feature.properties.enrnumhis + ' ' + '(' + feature.properties.enrpcthis*100 + '%)' + '</li><li>White: ' + feature.properties.enrnumwht + ' ' + '(' + feature.properties.enrpctwht*100 + '%)' + '</li><li>Poverty: ' + feature.properties.enrnumpov + ' ' + '(' + feature.properties.enrpctpov*100 + '%)' + '</li><li>Free or Reduced Price Lunch: ' + feature.properties.ccdenrnumfrl + ' ' + '(' + feature.properties.ccdenrpctfrl*100 + '%)' + '</li></p>');
               
             },
 
