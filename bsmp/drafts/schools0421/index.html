@@ -85,6 +85,7 @@
       var fillColor = 'hsl(' + fillHue + ', 66%, ' + (((1 - pctValue) * 88) + 10) + '%)';
       if (pctValue == undefined) {
         fillColor = 'hsl(0, 0%, 70%)';
+          fillOpacity = 0.8;
       }
       // Varying point radii by enrnumtot
 
@@ -146,7 +147,9 @@
         fillColor = 'hsl(' + fillHue + ', 66%, ' + (pctValue / 100) + '%)';
       }
       return {
-        stroke: false,
+        stroke: true,
+        color: "#fff",
+        weight: 1,
         fillColor: fillColor,
         fillOpacity: fillOpacity
       };
@@ -198,8 +201,6 @@
         }
       });
       map.addControl(slider);    
-  slider.play();
-  slider.pause();
 
       /*
        * Select our data from CartoDB. I'll reformat it here for clarity:
@@ -242,7 +243,7 @@
            */
           timeline = L.timeline(data, {
             onEachFeature: function (feature, layer) {
-              layer.bindPopup('<strong><p>' + feature.properties.entityname + ' ' + '(' + feature.properties.dbn + ')' + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Enrollment: ' + (feature.properties.enrnumtot === null ? 'no data' : feature.properties.enrnumtot) + '</li><li>African-American: ' + (feature.properties.enrnumafm === null ? 'no data' : feature.properties.enrnumafm) + ' ' + '(' + (feature.properties.enrpctafm_d === null ? ' -- ' : feature.properties.enrpctafm_d) + '%)' + '</li><li>Asian: ' + (feature.properties.enrnumasi === null ? 'no data' : feature.properties.enrnumasi) + ' ' + '(' + (feature.properties.enrpctasi_d === null ? ' -- ' : feature.properties.enrpctasi_d) + '%)' + '</li><li>Hispanic: ' + (feature.properties.enrnumhis === null ? 'no data' : feature.properties.enrnumhis) + ' ' + '(' + (feature.properties.enrpcthis_d === null ? ' -- ' : feature.properties.enrpcthis_d) + '%)' + '</li><li>White: ' + (feature.properties.enrnumwht === null ? 'no data' : feature.properties.enrnumwht) + ' ' + '(' + (feature.properties.enrpctwht_d === null ? ' -- ' : feature.properties.enrpctwht_d) + '%)' + '</li><li>Poverty: ' + (feature.properties.enrnumpov === null ? 'no data' : feature.properties.enrnumpov) + ' ' + '(' + (feature.properties.enrpctpov_d === null ? ' -- ' : feature.properties.enrpctpov_d) + '%)' + '</li><li>Free or Reduced Price Lunch: ' + (feature.properties.ccdenrnumfrl === null ? 'no data' : feature.properties.ccdenrnumfrl) + ' ' + '(' + (feature.properties.ccdenrpctfrl_d === null ? ' -- ' : feature.properties.ccdenrpctfrl_d) + '%)' + '</li></p>');
+              layer.bindPopup('<h2><strong><p>' + feature.properties.entityname + ' ' + '(' + feature.properties.dbn + ')' + '</strong><br>Year: ' + feature.properties.year + '</p></h2><p><b>Total Enrollment:</b> ' + (feature.properties.enrnumtot === null ? 'no data' : feature.properties.enrnumtot) + '<br><b>African-American:</b> ' + (feature.properties.enrnumafm === null ? 'no data' : feature.properties.enrnumafm) + ' ' + '(' + (feature.properties.enrpctafm_d === null ? ' -- ' : feature.properties.enrpctafm_d) + '%)' + '<br><b>Asian:</b> ' + (feature.properties.enrnumasi === null ? 'no data' : feature.properties.enrnumasi) + ' ' + '(' + (feature.properties.enrpctasi_d === null ? ' -- ' : feature.properties.enrpctasi_d) + '%)' + '<br><b>Hispanic:</b> ' + (feature.properties.enrnumhis === null ? 'no data' : feature.properties.enrnumhis) + ' ' + '(' + (feature.properties.enrpcthis_d === null ? ' -- ' : feature.properties.enrpcthis_d) + '%)' + '<br><b>White:</b> ' + (feature.properties.enrnumwht === null ? 'no data' : feature.properties.enrnumwht) + ' ' + '(' + (feature.properties.enrpctwht_d === null ? ' -- ' : feature.properties.enrpctwht_d) + '%)' + '<br><b>Poverty:</b> ' + (feature.properties.enrnumpov === null ? 'no data' : feature.properties.enrnumpov) + ' ' + '(' + (feature.properties.enrpctpov_d === null ? ' -- ' : feature.properties.enrpctpov_d) + '%)' + '<br><b>Free or Reduced Price Lunch:</b> ' + (feature.properties.ccdenrnumfrl === null ? 'no data' : feature.properties.ccdenrnumfrl) + ' ' + '(' + (feature.properties.ccdenrpctfrl_d === null ? ' -- ' : feature.properties.ccdenrpctfrl_d) + '%)' + '</p>');
               
             },
 
@@ -256,7 +257,7 @@
           });
           tractsTimeline = L.timeline(tractsData, {
             onEachFeature: function (feature, layer) {
-              layer.bindPopup('<strong><p>' + feature.properties.name + '</p></strong><p>Year: ' + feature.properties.year + '</p><ul><li>Total Population: ' + feature.properties.numtot + '</li><li>African-American: ' + (feature.properties.numafm === null ? 'no data' : feature.properties.numafm) + ' ' + '(' + (feature.properties.pctafm_d === null ? ' -- ' : feature.properties.pctafm_d) + '%)' + '</li><li>Asian: ' + (feature.properties.numasi === null ? 'no data' : feature.properties.numasi) + ' ' + '(' + (feature.properties.pctasi_d === null ? ' -- ' : feature.properties.pctasi_d) + '%)' + '</li><li>Hispanic: ' + (feature.properties.numhis === null ? 'no data' : feature.properties.numhis) + ' ' + '(' + (feature.properties.pcthis_d === null ? ' -- ' : feature.properties.pcthis_d) + '%)' + '</li><li>White: ' + (feature.properties.numwht === null ? 'no data' : feature.properties.numwht) + ' ' + '(' + (feature.properties.pctwht_d === null ? ' -- ' : feature.properties.pctwht_d) + '%)' + '</li><li>Poverty: ' + (feature.properties.numpov === null ? 'no data' : feature.properties.numpov) + ' ' + '(' + (feature.properties.pctpov_d === null ? ' -- ' : feature.properties.pctpov_d) + '%)' + '</li><li>Under 18: ' + (feature.properties.num18 === null ? 'no data' : feature.properties.num18) + ' ' + '(' + (feature.properties.pct18_d === null ? ' -- ' : feature.properties.pct18_d) + '%)' + '</li></p>');
+              layer.bindPopup('<h2><strong><p>' + feature.properties.name + '</strong><br>Year: ' + feature.properties.year + '</p></h2><p><b>Total Population:</b> ' + feature.properties.numtot + '<br><b>African-American:</b> ' + (feature.properties.numafm === null ? 'no data' : feature.properties.numafm) + ' ' + '(' + (feature.properties.pctafm_d === null ? ' -- ' : feature.properties.pctafm_d) + '%)' + '<br><b>Asian:</b> ' + (feature.properties.numasi === null ? 'no data' : feature.properties.numasi) + ' ' + '(' + (feature.properties.pctasi_d === null ? ' -- ' : feature.properties.pctasi_d) + '%)' + '<br><b>Hispanic:</b> ' + (feature.properties.numhis === null ? 'no data' : feature.properties.numhis) + ' ' + '(' + (feature.properties.pcthis_d === null ? ' -- ' : feature.properties.pcthis_d) + '%)' + '<br><b>White:</b> ' + (feature.properties.numwht === null ? 'no data' : feature.properties.numwht) + ' ' + '(' + (feature.properties.pctwht_d === null ? ' -- ' : feature.properties.pctwht_d) + '%)' + '<br><b>Poverty:</b> ' + (feature.properties.numpov === null ? 'no data' : feature.properties.numpov) + ' ' + '(' + (feature.properties.pctpov_d === null ? ' -- ' : feature.properties.pctpov_d) + '%)' + '<br><b>Under 18:</b> ' + (feature.properties.num18 === null ? 'no data' : feature.properties.num18) + ' ' + '(' + (feature.properties.pct18_d === null ? ' -- ' : feature.properties.pct18_d) + '%)' + '</p>');
             },
 
             style: function(feature) {
@@ -267,7 +268,8 @@
           tractsTimeline.addTo(map);
           timeline.addTo(map);
           slider.addTimelines(timeline,tractsTimeline);
-
+  slider.play();
+  slider.pause();
         });
       });
 
@@ -298,25 +300,23 @@
       .leaflet-popup p {
     margin: 5px 20;
   }
-
-    .category {
+    .frame {
       position: absolute;
-      right: 435px;
-      top: 15px;
+      right: 430px;
+      top: 12px;
       z-index: 5000;
-    }
-     .categorySchools {
-      position: absolute;
-      right: 435px;
-      top: 45px;
-      z-index: 5000;
+      background-color:#FFF;
+      padding: 3px 10px 10px 10px;
+      border-style: solid;
     }
 </style>
   </head>
   <body>
 
     <div class="map" id="map"></div>
-   <select class="category">
+    <div class="frame">
+        <h4><strong>Census Tracts</strong></h4>
+    <select class="category">
     <option value="pctafm">% african american</option>
     <option value="pctasi">% asian</option>
     <option value="pcthis">% hispanic</option>
@@ -324,6 +324,7 @@
     <option value="pctpov">% poverty</option>
     <option value="pct18">% under 18</option>
   </select>
+        <h4><strong>Schools</strong></h4>
     <select class="categorySchools">
     <option value="enrpctafm">% african american</option>
     <option value="enrpctasi">% asian</option>
@@ -332,6 +333,7 @@
     <option value="enrpctpov">% poverty</option>
     <option value="ccdenrpctfrl">% FRPL</option>
   </select>
+      </div>
     <div class="sidepanel">
       <div class="wrapper">
         <div class="context subheader">
@@ -339,29 +341,28 @@
         </div>
         <h1>Central Brooklyn School Mapping Project</h1>
         <h3>How to use</h3>
-<ol><li>Select a demographic from one or both of the menus in the top right corner of the map.</li> 
-          <li>Press play on the timeline, or use the arrows to skip from year to year.</li>
-        <li>Click on a school or census tract to see more detailed information.</li></ol> 
+<h2><ol><li>Select a demographic category from each of the drop-down menus in the top right corner of the map.</li> 
+          <li>Press play on the timeline, drag the slider along the timeline, or use the arrows to skip from year to year.</li>
+        <li>Click on a school or census tract to see more detailed information.</li></ol></h2> 
           
           <h3>How to read</h3>
-        <ul><li><strong>Shape: </strong>Each circle represents a public school in District 16.</li>
-        <li><strong>Size: </strong>A school gets bigger and smaller as <em>enrollment</em> goes up and down.</li>
-        <li><strong>Color: </strong>A school or census tract gets darker and lighter as the percentage of the selected <em>demographic</em> group in that school or census tract goes up and down. Gray indicates missing data.</li>
-        <li><strong>Year: </strong>Each year displayed on the timeline refers to the school year <em>ending</em> in that year. For example, "2016" refers to the 2015-2016 school year.</li></ul>
+          <h2><p><strong>Shape: </strong>Each circle represents a District 16 public school.</p>
+       <p><strong>Size: </strong>As enrollment goes up and down, schools get bigger and smaller.</p>
+        <p><strong>Color: </strong>Each demographic group is represented by a different color. As the percentage of the selected group goes up and down, the corresponding color gets darker and lighter. (Gray indicates missing data.)</p>
+        <p><strong>Year: </strong>Each year displayed on the timeline refers to the school year <em>ending</em> in that year. For example, "2016" refers to the 2015-2016 school year.</p></h2>
         
-
+          <h3>Notes</h3>
+          <h4><ul><li>District 16 was created by the Decentralization Law of 1969. Until the 1973-74 school year, District 16 included parts of what is now District 32 (Bushwick).</li> 
+             <li>Until the 1979-80 school year, the Board of Education did not count the number of white students in a school.</li><li>Department of Education “Poverty” counts (2006-07 to the present) are based on the number of students with families who have qualified for free or reduced price lunch, or are eligible for Human Resources Administration (HRA) benefits. The poverty indicator also includes students enrolled in a Universal Meal School (where all students automatically qualify).</li></ul></h4>
         <!--Copy and paste the div below for creating content blocks-->
 
 
         <h3>Sources</h3>
-          <h5><ul><li>New York City Municipal Library and Archives</li>
-          <li>NYU Bobst Library</li>
-             <li>National Center for Education Statistics</li>
-              <li>NYU Research Alliance for NYC Schools</li>
-              <li>NYC Department of Education</li>
-              <li>National Historic Geographic Information System</li></h5>
+          <h4><p>New York City Municipal Library and Archives<br>NYU Bobst Library<br>National Center for Education Statistics (NCES)<br>NYU Research Alliance for NYC Schools<br>NYC Department of Education<br>National Historic Geographic Information System (NHGIS)</h4>
               
-
+        <h3>Special Thanks</h3>
+              <h4><p>Eric Brelsford, Heather Lewis, Nicole Mader</p></h4>
+              
         <div class="context footer">
           <p>Create your maps with ease using <a href="http://cartodb.com">CartoDB</a></p></p>
         </div>
