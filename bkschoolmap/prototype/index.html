@@ -195,10 +195,11 @@
        *   http://momentjs.com/docs/#/displaying/
        */
         var slider = L.timelineSliderControl({
-        start: new Date(1972, 0, 1),
+        start: new Date(1971, 0, 1),
         formatOutput: function(date){
           return moment(date).format("YYYY");
-        }
+        },
+        duration: 30000
       });
       map.addControl(slider);    
 
@@ -218,7 +219,7 @@
        *    for a while. If you have a real end date you would probably want to use
        *    that.
        */
-       var sql = "SELECT *, year_start AS start, year_end AS end FROM d16_schoolsdata_0424_merge WHERE the_geom IS NOT NULL";
+       var sql = "SELECT *, year_start AS start, year_end AS end FROM d16_schoolsdata_0428_merge WHERE the_geom IS NOT NULL";
       var url = 'http://maxfreedman.cartodb.com/api/v1/sql?' + $.param({
         format: 'geojson',
         q: sql
@@ -243,7 +244,7 @@
            */
           timeline = L.timeline(data, {
             onEachFeature: function (feature, layer) {
-              layer.bindPopup('<h2><strong><p>' + feature.properties.entityname + ' ' + '(' + feature.properties.dbn + ')' + '</strong><br>Year: ' + feature.properties.year + '</p></h2><p><b>Total Enrollment:</b> ' + (feature.properties.enrnumtot === null ? 'no data' : feature.properties.enrnumtot) + '<br><b>African-American:</b> ' + (feature.properties.enrnumafm === null ? 'no data' : feature.properties.enrnumafm) + ' ' + '(' + (feature.properties.enrpctafm_d === null ? ' -- ' : feature.properties.enrpctafm_d) + '%)' + '<br><b>Asian:</b> ' + (feature.properties.enrnumasi === null ? 'no data' : feature.properties.enrnumasi) + ' ' + '(' + (feature.properties.enrpctasi_d === null ? ' -- ' : feature.properties.enrpctasi_d) + '%)' + '<br><b>Hispanic:</b> ' + (feature.properties.enrnumhis === null ? 'no data' : feature.properties.enrnumhis) + ' ' + '(' + (feature.properties.enrpcthis_d === null ? ' -- ' : feature.properties.enrpcthis_d) + '%)' + '<br><b>White:</b> ' + (feature.properties.enrnumwht === null ? 'no data' : feature.properties.enrnumwht) + ' ' + '(' + (feature.properties.enrpctwht_d === null ? ' -- ' : feature.properties.enrpctwht_d) + '%)' + '<br><b>Poverty:</b> ' + (feature.properties.enrnumpov === null ? 'no data' : feature.properties.enrnumpov) + ' ' + '(' + (feature.properties.enrpctpov_d === null ? ' -- ' : feature.properties.enrpctpov_d) + '%)' + '<br><b>Free or Reduced Price Lunch:</b> ' + (feature.properties.ccdenrnumfrl === null ? 'no data' : feature.properties.ccdenrnumfrl) + ' ' + '(' + (feature.properties.ccdenrpctfrl_d === null ? ' -- ' : feature.properties.ccdenrpctfrl_d) + '%)' + '</p>');
+                layer.bindPopup('<h2><strong><p>' + feature.properties.entityname + ' ' + '(' + feature.properties.dbn + ')' + '</strong><br>Year: ' + feature.properties.year + '</p></h2><p><b>Total Enrollment:</b> ' + (feature.properties.enrnumtot === null ? 'no data' : feature.properties.enrnumtot) + '<br><b>Utilization:</b> ' + (feature.properties.utilpct_d === null ? ' -- ' : feature.properties.utilpct_d) + '%' + '<br><b>African-American:</b> ' + (feature.properties.enrnumafm === null ? 'no data' : feature.properties.enrnumafm) + ' ' + '(' + (feature.properties.enrpctafm_d === null ? ' -- ' : feature.properties.enrpctafm_d) + '%)' + '<br><b>Asian:</b> ' + (feature.properties.enrnumasi === null ? 'no data' : feature.properties.enrnumasi) + ' ' + '(' + (feature.properties.enrpctasi_d === null ? ' -- ' : feature.properties.enrpctasi_d) + '%)' + '<br><b>Hispanic:</b> ' + (feature.properties.enrnumhis === null ? 'no data' : feature.properties.enrnumhis) + ' ' + '(' + (feature.properties.enrpcthis_d === null ? ' -- ' : feature.properties.enrpcthis_d) + '%)' + '<br><b>White:</b> ' + (feature.properties.enrnumwht === null ? 'no data' : feature.properties.enrnumwht) + ' ' + '(' + (feature.properties.enrpctwht_d === null ? ' -- ' : feature.properties.enrpctwht_d) + '%)' + '<br><b>Poverty:</b> ' + (feature.properties.enrnumpov === null ? 'no data' : feature.properties.enrnumpov) + ' ' + '(' + (feature.properties.enrpctpov_d === null ? ' -- ' : feature.properties.enrpctpov_d) + '%)' + '<br><b>Free or Reduced Price Lunch:</b> ' + (feature.properties.ccdenrnumfrl === null ? 'no data' : feature.properties.ccdenrnumfrl) + ' ' + '(' + (feature.properties.ccdenrpctfrl_d === null ? ' -- ' : feature.properties.ccdenrpctfrl_d) + '%)' + '</p><p><h5><b>Source:</b><br><em> ' + feature.properties.datasrc + '</em>, <a href="' + feature.properties.dataurl + '">' + feature.properties.dataloc + '</a><br><em> ' + (feature.properties.datasrc2 === null ? '  ' : feature.properties.datasrc2 + '</em>' + (feature.properties.datasrc2 ? ', ' : '') + '<a href="' + feature.properties.dataurl2 + '">' + feature.properties.dataloc2 + '</a>'));
               
             },
 
@@ -302,7 +303,7 @@
   }
     .frame {
       position: absolute;
-      right: 430px;
+      right: 34%;
       top: 12px;
       z-index: 5000;
       background-color:#FFF;
