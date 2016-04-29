@@ -5,6 +5,7 @@ h1{font-weight: bold; font-size: 31px; letter-spacing: -1px; color: #333; line-h
 h2{font-weight: normal; font-size: 14px; color: #333; margin: 6px 0 0 0; line-height: 18px;}
 h3{font-weight: bold; font-size: 12px; color: #8b8b8b; text-transform: uppercase; margin: 16px 0 0 0;}
 h4{font-weight: normal; font-size: 12px; color: #555; margin: 6px 0 0 0;}
+h5{font-weight: normal; font-size: 10px; color: #555; margin: 6px 0 0 0;}
 p{margin: 6px 0 6px 0; line-height: 18px;}
 ul li { margin: 6px 0 6px 0;}
 ol li { margin: 6px 0 6px 0;}
