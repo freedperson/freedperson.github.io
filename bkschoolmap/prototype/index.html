@@ -219,13 +219,13 @@
        *    for a while. If you have a real end date you would probably want to use
        *    that.
        */
-       var sql = "SELECT *, year_start AS start, year_end AS end FROM d16_schoolsdata_0428_merge WHERE the_geom IS NOT NULL";
+       var sql = "SELECT *, year_start AS start, year_end + interval '1 day' AS end FROM d16_schoolsdata_0428_merge WHERE the_geom IS NOT NULL";
       var url = 'http://maxfreedman.cartodb.com/api/v1/sql?' + $.param({
         format: 'geojson',
         q: sql
       });  
       
-      var tractsSql = "SELECT *, year_start AS start, year_end AS end FROM ngis_d16tracts_7012_merge WHERE the_geom IS NOT NULL";
+      var tractsSql = "SELECT *, year_start AS start, year_end + interval '1 day' AS end FROM ngis_d16tracts_7012_merge WHERE the_geom IS NOT NULL";
       var tractsUrl = 'http://maxfreedman.cartodb.com/api/v1/sql?' + $.param({
         format: 'geojson',
         q: tractsSql
@@ -268,7 +268,7 @@
 
           tractsTimeline.addTo(map);
           timeline.addTo(map);
-          slider.addTimelines(timeline,tractsTimeline);
+          slider.addTimelines(tractsTimeline, timeline);
   slider.play();
   slider.pause();
         });
